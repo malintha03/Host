@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Manage Foods - DineDrop')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div class="container py-5">
+  <h2>🍔 Manage Foods</h2>
+  <div th:if="${success}" class="alert alert-success py-2" th:text="${success}"></div>
+  <div th:if="${error}" class="alert alert-danger py-2" th:text="${error}"></div>
+  <table class="table bg-white rounded mt-3 align-middle">
+    <thead><tr><th>Image</th><th>Name</th><th>Restaurant</th><th>Price</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr th:each="f : ${foods}">
+        <td>
+          <img th:if="${f.image != null and !f.image.isEmpty()}" th:src="@{'/uploads/' + ${f.image}}" style="width:60px;height:60px;object-fit:cover;border-radius:8px">
+        </td>
+        <td th:text="${f.name}"></td>
+        <td th:text="${restaurantService.byId(f.restaurantId) != null ? restaurantService.byId(f.restaurantId).name : '-'}"></td>
+        <td th:text="${'$' + f.price}"></td>
+        <td>
+          <form method="post" th:action="@{'/admin/foods/delete/' + ${f.id}}" data-confirm="Delete this food?">
+            <button class="btn btn-sm btn-outline-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(foods)}"><td colspan="5" class="text-center text-muted py-4">No foods found.</td></tr>
+    </tbody>
+  </table>
+</div>
+<footer th:replace="~{fragments :: footer}"></footer>
+<div th:replace="~{fragments :: scripts}"></div>
+</body>
+</html>
